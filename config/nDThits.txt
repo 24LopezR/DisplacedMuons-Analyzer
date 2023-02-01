@@ -1,0 +1,6 @@
+[ ev.HLT_L2Mu10_NoVertex_NoBPTX == True,
+  ev.{0}_phi[n] > -2.1,
+  ev.{0}_phi[n] < -0.8,
+  ev.{0}_pt[n] > 12.5,
+  ev.{0}_nValidMuonDTHits[n] > 20,
+  n_down == 1]

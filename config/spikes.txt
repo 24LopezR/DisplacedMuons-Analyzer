@@ -1,0 +1,3 @@
+[ ev.HLT_L2Mu10_NoVertex_NoBPTX == True,
+  ev.{0}_eta[n] > -0.1,
+  ev.{0}_eta[n] < 0.1]
