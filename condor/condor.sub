@@ -1,9 +1,0 @@
-universe	= vanilla
-executable	= launch_condor.sh
-arguments	= $(ProcID)
-output		= out/fill.out
-error		= out/fill.err
-log		= out/fill.log
-Notify_user	= rlopezru@cern.ch
-+JobFlavour	= "espresso"
-queue 10

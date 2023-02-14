@@ -1,0 +1,9 @@
+universe        = vanilla
+executable      = {0} 
+arguments       = $(ProcID)
+output          = {1}.out
+error           = {1}.err
+log             = {1}.log
+Notify_user     = rlopezru@cern.ch
++JobFlavour     = "workday"
+queue 1

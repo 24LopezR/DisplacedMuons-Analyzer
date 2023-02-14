@@ -9,9 +9,10 @@ void setTDRStyle(bool fatline=true) {
 
   // For the canvas:
   tdrStyle->SetCanvasBorderMode(0);
+  tdrStyle->SetCanvasBorderSize(1);
   tdrStyle->SetCanvasColor(kWhite);
   tdrStyle->SetCanvasDefH(600); //Height of canvas
-  tdrStyle->SetCanvasDefW(600); //Width of canvas
+  tdrStyle->SetCanvasDefW(650); //Width of canvas
   tdrStyle->SetCanvasDefX(0);   //POsition on screen
   tdrStyle->SetCanvasDefY(0);
 
@@ -32,7 +33,7 @@ void setTDRStyle(bool fatline=true) {
   tdrStyle->SetFrameFillStyle(0);
   tdrStyle->SetFrameLineColor(1);
   tdrStyle->SetFrameLineStyle(1);
-  tdrStyle->SetFrameLineWidth(1);
+  tdrStyle->SetFrameLineWidth(2);
 
   // For the histo:
   // tdrStyle->SetHistFillColor(1);
@@ -82,7 +83,7 @@ void setTDRStyle(bool fatline=true) {
   tdrStyle->SetPadBottomMargin(0.13);
   tdrStyle->SetPadLeftMargin(0.13);
   //tdrStyle->SetPadRightMargin(0.05);
-  tdrStyle->SetPadRightMargin(0.10);
+  tdrStyle->SetPadRightMargin(0.11);
 
   //gPad->SetRightMargin(0.16) ?
   // For the Global title:
@@ -115,7 +116,7 @@ void setTDRStyle(bool fatline=true) {
 
   tdrStyle->SetLabelColor(1, "XYZ");
   tdrStyle->SetLabelFont(42, "XYZ");
-  tdrStyle->SetLabelOffset(0.007, "XYZ");
+  tdrStyle->SetLabelOffset(0.01, "XYZ");
   tdrStyle->SetLabelSize(0.04, "XYZ");
 
   // For the axis:
@@ -141,7 +142,7 @@ void setTDRStyle(bool fatline=true) {
 
   // tdrStyle->SetBarOffset(Float_t baroff = 0.5);
   // tdrStyle->SetBarWidth(Float_t barwidth = 0.5);
-  // tdrStyle->SetPaintTextFormat(const char* format = "g");
+  tdrStyle->SetPaintTextFormat("3.2f");
   // tdrStyle->SetPalette(Int_t ncolors = 0, Int_t* colors = 0);
   // tdrStyle->SetTimeOffset(Double_t toffset);
   // tdrStyle->SetHistMinimumZero(kTRUE);
@@ -156,8 +157,8 @@ void setTDRStyle(bool fatline=true) {
   Int_t FI =  TColor::CreateGradientColorTable(5, stops, red, green,blue, 255);
   for (int i=0; i<255; i++){ colors[i] = FI+i;}
   tdrStyle->SetNumberContours(255);
-  tdrStyle->SetPalette(255, colors);
-  //tdrStyle->SetPalette(kCool);
+  //tdrStyle->SetPalette(255, colors);
+  tdrStyle->SetPalette(kBird);
 
   // Galapago palettes
   /*

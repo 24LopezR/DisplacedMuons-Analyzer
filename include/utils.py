@@ -19,10 +19,10 @@ def passIDSelection(ev, i, col='dsa'):
         passID = True
     
     if col == 'dgl':        
-        if ev.dgl_phi[i] >= -0.8: return
-        if ev.dgl_phi[i] <= -2.1: return
-        if abs(ev.dgl_eta[i]) >= 0.7: return
-        if ev.dgl_pt[i] <= 12.5: return
+        if ev.dgl_phi[i] >= -0.6: return
+        if ev.dgl_phi[i] <= -2.6: return
+        if abs(ev.dgl_eta[i]) >= 0.9: return
+        if ev.dgl_pt[i] <= 20: return
         if ev.dgl_ptError[i]/ev.dgl_pt[i] >= 0.3: return
         if ev.dgl_nMuonHits[i] <= 12: return
         #if ev.dgl_normalizedChi2[i] >= 2: return
@@ -71,7 +71,8 @@ def findProbe(ev, n, print_out=False, col='dsa'):
 
         for i in range(ev.ndgl):
             if i == n: continue
-            if ev.dgl_nValidMuonDTHits[i]+ev.dgl_nValidMuonDTHits[i] <= 0: continue
+            if ev.dgl_pt[i] <= 20: continue
+            #if ev.dgl_nValidMuonDTHits[i]+ev.dgl_nValidMuonDTHits[i] <= 0: continue
             phi_temp = ev.dgl_phi[i]
             eta_temp = ev.dgl_eta[i]
             theta_temp = 2 * np.arctan(np.exp(-eta_temp)) - np.pi/2
@@ -79,7 +80,7 @@ def findProbe(ev, n, print_out=False, col='dsa'):
             v_temp = [np.cos(theta_temp)*np.cos(phi_temp), np.cos(theta_temp)*np.sin(phi_temp), np.sin(theta_temp)]
             cos_alpha_temp = angle(v_tag, v_temp)
             cos_alpha = cos_alpha_temp
-            if cos_alpha < np.cos(2.1):
+            if cos_alpha < np.cos(2.8):
                 existsProbe = True
                 break
     
