@@ -3,7 +3,6 @@ import os
 from math import pi
 import numpy as np
 from argparse import ArgumentParser
-from include.PlotHandler import PlotHandler
 import include.drawUtils as draw
 from include.Launcher import Launcher
 
@@ -17,38 +16,48 @@ for level in runningfile.split('/')[:-1]:
     WORKPATH += '/'
 EOSPATH = '/eos/user/r/rlopezru/Cosmics-Analyzer_out/'
 
-def makeEfficiencyPlot(hifile, hname, title, tag, collection, color=r.kBlue+1, ylog=False):
+def makeEfficiencyPlot(hfile, hname, title, tag, collection, names, color=r.kBlue+1):
     
-    h = hfile.Get(hname+"_"+collection)
+    h_track = hfile.Get(hname+"_"+collection)
+    h_muon = hfile.Get(hname+"_dmu_"+collection)
 
-    c = r.TCanvas("c","c")
+    c = r.TCanvas(hname+collection,hname+collection)
+    #c.SetFillStyle(4000)
     c.cd()
-    if ylog: c.SetLogy(1)
-    else: c.SetLogy(0)
     
-    h.Draw()    
+    h_track.Draw("PA")
+    h_muon.Draw("P,SAME")
    
     c.Update() 
-    #### Styling
-    h.SetLineWidth(1)
-    h.SetLineColor(color) 
-    h.SetMarkerColor(color)
-    h.SetMarkerStyle(20)
-    h.SetTitle(title)
-    _g = h.GetPaintedGraph()
+    #### Styling track plot
+    h_track.SetLineWidth(1)
+    h_track.SetLineColor(color) 
+    h_track.SetMarkerColor(color)
+    h_track.SetMarkerStyle(20)
+    #h_track.SetTitle(title)
+    _g = h_track.GetPaintedGraph()
     _g.SetMinimum(0)
     _g.SetMaximum(1.2)
     _g.GetYaxis().SetTitle('Efficiency')
+    #### Styling muon plot
+    h_muon.SetLineWidth(1)
+    h_muon.SetLineColor(color) 
+    h_muon.SetMarkerColor(color)
+    h_muon.SetMarkerStyle(r.kCircle)
+    #h_muon.SetTitle(title)
+    #_g = h_track.GetPaintedGraph()
+    #_g.SetMinimum(0)
+    #_g.SetMaximum(1.2)
+    #_g.GetYaxis().SetTitle('Efficiency')
         
-    '''
     l = r.TLegend(.60,.32,.85,.40)
     l.SetFillStyle(0)
     l.SetTextFont(42)
     l.SetTextSize(0.025)
-    l.AddEntry(h, name, "P")
+    l.AddEntry(h_track, names[0], "P")
+    l.AddEntry(h_muon, names[1], "P")
     l.SetBorderSize(0)
     l.Draw()
-    '''
 
     latex = r.TLatex()
     latex.SetNDC();
@@ -57,7 +66,7 @@ def makeEfficiencyPlot(hifile, hname, title, tag, collection, color=r.kBlue+1, y
     latex.SetTextFont(42);
     latex.SetTextAlign(31);
     latex.SetTextSize(0.04);
-    latex.DrawLatex(0.35, 0.93, "#bf{CMS} #it{Internal}")
+    latex.DrawLatex(0.34, 0.93, "#bf{CMS} #it{Internal}")
 
     latex = r.TLatex()
     latex.SetNDC();
@@ -65,8 +74,8 @@ def makeEfficiencyPlot(hifile, hname, title, tag, collection, color=r.kBlue+1, y
     latex.SetTextColor(r.kBlack);
     latex.SetTextFont(42);
     latex.SetTextAlign(31);
-    latex.SetTextSize(0.04);
-    latex.DrawLatex(0.90, 0.93, "Run3 2022C cosmics data")
+    latex.SetTextSize(0.03);
+    latex.DrawLatex(0.92, 0.93, "Run3 2022C cosmics data ({0})".format(data))
     
     if not os.path.exists(EOSPATH+'Plots/'+tag):
         os.makedirs(EOSPATH+'Plots/'+tag)
@@ -75,41 +84,18 @@ def makeEfficiencyPlot(hifile, hname, title, tag, collection, color=r.kBlue+1, y
 
 
 
-def make2DEfficiencyPlot(hifile, hname, title, tag, collection, ylog=False):
+def make2DEfficiencyPlot(hfile, hname, title, tag, collection, zlog=False):
     
     h = hfile.Get(hname+'_'+collection)
 
-    c = r.TCanvas("c","c")
+    c = r.TCanvas(hname+collection,hname+collection,ww=610,wh=600)
+    c.SetFillStyle(4000)
     c.cd()
-    if ylog: c.SetLogy(1)
+    if zlog: c.SetLogy(1)
     else: c.SetLogy(0)
     
     h.Draw("COLZ,TEXT")    
    
-    c.Update() 
-    #### Styling
-    #colors = [r.kRed+1, r.kBlue+1]
-    #h.SetLineWidth(1)
-    #h.SetLineColor(colors[n]) 
-    #h.SetMarkerColor(colors[n])
-    #h.SetMarkerStyle(20)
-    #h.SetTitle(title)
-    #_g = h.GetPaintedGraph()
-    #_g.SetMinimum(0)
-    #_g.SetMaximum(1.2)
-    #_g.GetYaxis().SetTitle('Efficiency')
-        
-    '''
-    l = r.TLegend(.60,.32,.85,.40)
-    l.SetFillStyle(0)
-    l.SetTextFont(42)
-    l.SetTextSize(0.025)
-    for n,h in enumerate(hists):
-        l.AddEntry(h, n, "P")
-    l.SetBorderSize(0)
-    l.Draw()
-    '''
-
     latex = r.TLatex()
     latex.SetNDC();
     latex.SetTextAngle(0);
@@ -117,7 +103,7 @@ def make2DEfficiencyPlot(hifile, hname, title, tag, collection, ylog=False):
     latex.SetTextFont(42);
     latex.SetTextAlign(31);
     latex.SetTextSize(0.04);
-    latex.DrawLatex(0.35, 0.93, "#bf{CMS} #it{Internal}")
+    latex.DrawLatex(0.33, 0.93, "#bf{CMS} #it{Internal}")
 
     latex = r.TLatex()
     latex.SetNDC();
@@ -125,55 +111,137 @@ def make2DEfficiencyPlot(hifile, hname, title, tag, collection, ylog=False):
     latex.SetTextColor(r.kBlack);
     latex.SetTextFont(42);
     latex.SetTextAlign(31);
-    latex.SetTextSize(0.04);
-    latex.DrawLatex(0.90, 0.93, "Run3 2022C cosmics data")
+    latex.SetTextSize(0.03);
+    latex.DrawLatex(0.90, 0.93, "Run3 2022C cosmics data ({0})".format(data))
     
     if not os.path.exists(EOSPATH+'Plots/'+tag):
         os.makedirs(EOSPATH+'Plots/'+tag)
-    c.Print(EOSPATH+'Plots/'+tag+'/'+hname+".png")
-    c.Print(EOSPATH+'Plots/'+tag+'/'+hname+".pdf")
+    c.Print(EOSPATH+'Plots/'+tag+'/'+hname+collection+".png")
+    c.Print(EOSPATH+'Plots/'+tag+'/'+hname+collection+".pdf")
 
 
-def makeVarPlot(hifile, hname, tag, title, collections, names=['DSA'], ylog=True):
+def makeVarPlot(hfile, hname, tag, title, collection, names, color=r.kBlue, ylog=True):
     
-    hists = []
-    for c in collections:
-        hists.append(hfile.Get(hname+"_"+c))
+    h_track = hfile.Get(hname+"_"+collection) # track hist
+    h_muon = hfile.Get(hname+"_dmu_"+collection) # muon hist
     
-    for h in hists: h.Scale(1/h.Integral())
-    maxVal = max([h.GetMaximum() for h in hists])
+    maxVal = max([h_track.GetMaximum(), h_muon.GetMaximum()])
 
     #### Styling
-    colors = [r.kRed+1, r.kBlue+1]
-    for n,h in enumerate(hists):
-        h.SetLineWidth(1)
-        h.SetLineColor(colors[n])
-        #h.GetXaxis().SetTitleSize(0.045)
-        #h.GetXaxis().SetLabelSize(0.03)
-        #h.GetYaxis().SetTitleSize(0.045)
-        #h.GetYaxis().SetTitleOffset(1.25)
-        #h.GetYaxis().SetLabelSize(0.03)
-        h.SetFillColorAlpha(colors[n], 0.5)
-        h.SetTitle(title)
-        h.SetMaximum(1.2*maxVal)
+    h_track.SetLineWidth(1)
+    h_track.SetTitle(title)
+    if ylog: h_track.SetMaximum(100*maxVal)
+    else: h_track.SetMaximum(1.2*maxVal)
+    h_track.SetLineColor(color)
+    h_track.SetFillColorAlpha(color, 0.05)
+    #### Styling muon plot
+    h_muon.SetLineWidth(1)
+    h_muon.SetTitle(title)
+    if ylog: h_muon.SetMaximum(10*maxVal)
+    else: h_muon.SetMaximum(1.2*maxVal)
+    h_muon.SetLineColor(color)
+    h_muon.SetFillColorAlpha(color, 0.05)
+    h_muon.SetLineStyle(2)
 
-    c = r.TCanvas(hname, hname)
+    c = r.TCanvas(hname+collection, hname+collection)
+    c.SetFillStyle(4000)
     c.cd()
     if ylog: c.GetPad(0).SetLogy(1)
     else: c.GetPad(0).SetLogy(0)
     
-    hists[0].Draw("HIST")    
-    for h in hists[1:]: h.Draw("HIST,SAME")
+    h_track.Draw("HIST")    
+    h_muon.Draw("HIST,SAME")
     
-    l = r.TLegend(.70,.80,.90,.87)
+    l = r.TLegend(.65,.80,.90,.87)
     l.SetFillStyle(0)
     l.SetTextFont(42)
-    l.SetTextSize(0.03)
-    for n,h in enumerate(hists):
-        l.AddEntry(h, names[n], "L")
+    l.SetTextSize(0.025)
+    l.AddEntry(h_track, names[0], "L")
+    l.AddEntry(h_muon, names[1], "L")
     l.SetBorderSize(0)
     l.Draw()
     
+    latex = r.TLatex()
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(r.kBlack);
+    latex.SetTextFont(42);
+    latex.SetTextAlign(11);
+    latex.SetTextSize(0.04);
+    latex.DrawLatex(0.20, 0.93, "#bf{CMS} #it{Internal}")
+
+    latex = r.TLatex()
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(r.kBlack);
+    latex.SetTextFont(42);
+    latex.SetTextAlign(31);
+    latex.SetTextSize(0.03);
+    latex.DrawLatex(0.88, 0.93, "Run3 2022C cosmics data ({0})".format(data))
+   
+    latex = r.TLatex()
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(r.kBlack);
+    latex.SetTextFont(42);
+    latex.SetTextAlign(11);
+    latex.SetTextSize(0.025);
+    latex.DrawLatex(0.17, 0.86, "Emulated DisplacedMuonFilter".format(data))
+    latex.DrawLatex(0.17, 0.83, "(minMatches=2, minPtSTA=3.5, minPtTK=3.5)".format(data))
+    latex.DrawLatex(0.17, 0.80, "NoBPTX3BX trigger, no ID cuts".format(data))
+    
+    if not os.path.exists(EOSPATH+'Plots/'+tag):
+        os.makedirs(EOSPATH+'Plots/'+tag)
+    c.Print(EOSPATH+'Plots/'+tag+'/'+hname+collection+".png")
+    c.Print(EOSPATH+'Plots/'+tag+'/'+hname+collection+".pdf")
+
+
+def makeFilterPlot(hfile, hname, tag, title, color=r.kBlue, ylog=True):
+    
+    h_muon = hfile.Get(hname) # muon hist
+    
+    maxVal = h_muon.GetMaximum()
+
+    c = r.TCanvas(hname, hname)
+    c.SetFillStyle(4000)
+    c.cd()
+    if ylog: c.GetPad(0).SetLogy(1)
+    else: c.GetPad(0).SetLogy(0)
+
+    #### Styling muon plot
+    h_muon.SetLineWidth(1)
+    h_muon.SetTitle(title)
+    if ylog: h_muon.SetMaximum(2*maxVal)
+    else: h_muon.SetMaximum(1.2*maxVal)
+    h_muon.SetLineColor(color)
+    h_muon.SetFillColorAlpha(color, 0.05)
+    h_muon.SetLineStyle(1)
+
+    ### Bin labels
+    labels = ['stage 1','stage 2','stage 3']
+    for i in range(3): h_muon.GetXaxis().SetBinLabel(i+1,labels[i])
+    h_muon.SetMinimum(1)
+    h_muon.Draw("HIST")    
+     
+    latex = r.TLatex()
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(r.kBlack);
+    latex.SetTextFont(42);
+    latex.SetTextAlign(31);
+    latex.SetTextSize(0.04);
+    latex.DrawLatex(0.34, 0.93, "#bf{CMS} #it{Internal}")
+
+    latex = r.TLatex()
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(r.kBlack);
+    latex.SetTextFont(42);
+    latex.SetTextAlign(31);
+    latex.SetTextSize(0.03);
+    latex.DrawLatex(0.90, 0.93, "Run3 2022C cosmics data ({0})".format(data))
+
+ 
     if not os.path.exists(EOSPATH+'Plots/'+tag):
         os.makedirs(EOSPATH+'Plots/'+tag)
     c.Print(EOSPATH+'Plots/'+tag+'/'+hname+".png")
@@ -189,30 +257,35 @@ if __name__ == '__main__':
     r.gStyle.SetPaintTextFormat("3.2f")
     parser = ArgumentParser()
     parser.add_argument('-t', '--tag', dest='tag')
+    parser.add_argument('-a', '--aod', dest='aod', action='store_true')
     args = parser.parse_args()
     
+    data = 'MiniAOD'
+    if args.aod: data = 'AOD'
+
     r.setTDRStyle()    
     collections = ['dsa', 'dgl']
     
-    launch = Launcher(None, args.tag, collections, None)
+    launch = Launcher(None, args.tag, None)
     title = ''
     hfilename = launch.mergeHists()
     hfile = r.TFile(hfilename)
-    hists =     ["h_muons",    "h_muons_down", 
-                 "h_muons_up", "h_pt", 
-                 "h_eta",      "h_phi",
-                 "h_dxy",      "h_dz", 
-                 "h_Nhits",    "h_NDThits", "h_normalizedChi2"]
-    hists_eff = ["h_eff_pt",  "h_eff_eta", 
-                 "h_eff_dxy", "h_eff_dxy_cutdz", 
-                 "h_eff_dz",  "h_eff_dz_cutdxy"]
+    hists =     ["h_pt",       "h_eta",     "h_phi",
+                 "h_dxy",      "h_dz",      "h_normalizedChi2"]
+    hists_eff = ["h_eff_pt",   "h_eff_eta", 
+                 "h_eff_dxy",  "h_eff_dxy_cutdz", 
+                 "h_eff_dz",   "h_eff_dz_cutdxy"]
     hists_log = ["h_cosalpha", "h_dPhi", "h_dEta"]
-    for h in hists:
-        makeVarPlot(hfile, h, args.tag, title, collections, names=[c.upper() for c in collections], ylog=False)
-    for h in hists_log:
-        makeVarPlot(hfile, h, args.tag, title, collections, names=[c.upper() for c in collections], ylog=True)
     colors = [r.kRed+1, r.kBlue+1]
+    
     for n,collection in enumerate(collections):
         for h in hists_eff:
-            makeEfficiencyPlot(hfile, h, title, args.tag, collection, color=colors[n], ylog=False)
-        make2DEfficiencyPlot(hfile, "h_eff_2D", title, args.tag, collection, ylog=False) 
+            makeEfficiencyPlot(hfile, h, title, args.tag, collection, names=['track({0})'.format(collection),'muon({0})'.format(collection)], color=colors[n])
+        for h in hists:
+            makeVarPlot(hfile, h, args.tag, title, collection, names=['track({0})'.format(collection),'muon({0})'.format(collection)], color=colors[n], ylog=False)
+        for h in hists_log:
+            makeVarPlot(hfile, h, args.tag, title, collection, names=['track({0})'.format(collection),'muon({0})'.format(collection)], color=colors[n], ylog=True)
+        make2DEfficiencyPlot(hfile, "h_eff_2D", title, args.tag, collection, zlog=False) 
+        make2DEfficiencyPlot(hfile, "h_eff_2D_dmu", title, args.tag, collection, zlog=False) 
+    
+    makeFilterPlot(hfile, 'h_muons_filter', args.tag, title, color=r.kRed+1, ylog=True)

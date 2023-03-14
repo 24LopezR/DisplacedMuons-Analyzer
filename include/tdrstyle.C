@@ -12,7 +12,7 @@ void setTDRStyle(bool fatline=true) {
   tdrStyle->SetCanvasBorderSize(1);
   tdrStyle->SetCanvasColor(kWhite);
   tdrStyle->SetCanvasDefH(600); //Height of canvas
-  tdrStyle->SetCanvasDefW(650); //Width of canvas
+  tdrStyle->SetCanvasDefW(600); //Width of canvas
   tdrStyle->SetCanvasDefX(0);   //POsition on screen
   tdrStyle->SetCanvasDefY(0);
 
@@ -142,7 +142,7 @@ void setTDRStyle(bool fatline=true) {
 
   // tdrStyle->SetBarOffset(Float_t baroff = 0.5);
   // tdrStyle->SetBarWidth(Float_t barwidth = 0.5);
-  tdrStyle->SetPaintTextFormat("3.2f");
+  tdrStyle->SetPaintTextFormat("3.0f");
   // tdrStyle->SetPalette(Int_t ncolors = 0, Int_t* colors = 0);
   // tdrStyle->SetTimeOffset(Double_t toffset);
   // tdrStyle->SetHistMinimumZero(kTRUE);

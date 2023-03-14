@@ -1,8 +1,13 @@
 import ROOT as r
 import os
 from argparse import ArgumentParser
-from include.PlotHandler import PlotHandler
+from include.MuonPlotHandler import MuonPlotHandler
+from include.TrackPlotHandler import TrackPlotHandler
+from include.Debugger import Debugger
+import include.cfg as cfg
 
+# Config debugger
+debug = Debugger(cfg.DEBUG)
 '''
 Script that loops over the events of a given ntuple
 '''
@@ -15,16 +20,21 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--tag', dest='tag')
     args = parser.parse_args()
 
+
     # Open data file
     _file = r.TFile(args.fname)
     _tree = _file.Get("Events")
  
-    collections = ['dsa', 'dgl']
     with open(args.cuts_filename, 'r') as f:
         cuts_selection = ''.join(f.readlines())
 
-    pltHandle = PlotHandler(args.hfname, collections, cuts_selection)
+    trackPlotHandle = TrackPlotHandler(args.hfname+'_tracks.root', cuts_selection)
+    muonPlotHandle  = MuonPlotHandler(args.hfname+'_muons.root', cuts_selection)
     for i,ev in enumerate(_tree):
-        if i%100000==0: print("Events processed: {0}".format(str(i)))
-        pltHandle.processEvent(ev)
-    pltHandle.write()
+        if i%1000==0: print("    - Events processed: {0}".format(str(i)))
+        trackPlotHandle.processEvent(ev)
+        muonPlotHandle.processEvent(ev)
+        #if i>10000: break
+    if os.path.exists(args.hfname): os.system('rm {0}'.format(args.hfname))
+    trackPlotHandle.write()
+    muonPlotHandle.write()
