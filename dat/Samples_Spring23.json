@@ -1,0 +1,15 @@
+{
+    "Cosmics_2022C": [
+        {
+            "ntuples_from_AOD_nsegments2": "/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_AOD-Ntuples/230314_142733/0000"
+        }
+    ],
+    "HTo2LongLived_400_150_4000": [
+        {
+            "miniAOD_from_AOD_nsegments2": "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_MiniAOD/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD_CMSSW_12_4_11_patch3_nsegments2/230314_084718/0000",
+            "miniAOD_from_AOD_nstations2": "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_MiniAOD/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD_CMSSW_12_4_11_patch3_nstations2/230314_090217/0000",
+            "ntuples_from_miniAOD_numberOfMatches2": "/eos/user/r/rlopezru/Samples/Cosmics/NoBPTX/CosmicsAnalysis_Run2022C/230221_191312_MiniAOD/0000/",
+            "ntuples_from_AOD": "/eos/user/r/rlopezru/Samples/Cosmics/NoBPTX/CosmicsAnalysis_Run2022C/230301_114700/0000/"
+        }
+    ]
+}
