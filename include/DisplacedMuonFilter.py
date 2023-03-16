@@ -16,7 +16,7 @@ class DisplacedMuonFilter:
 
     def layerTwoFilter(self, ev, n):
         #if not ev.dmu_isMatchesValid[n] or ev.dmu_numberOfMatches[n] < self.minMatches or ev.dmu_dsa_pt[n] < self.minPtSTA: return False
-        if not (ev.dmu_dsa_dtStationsWithValidHits[n]+ev.dmu_dsa_cscStationsWithValidHits[n])>=2 or ev.dmu_dsa_pt[n] < self.minPtSTA: return False
+        if ev.dmu_dsa_nsegments[n] < 2 or ev.dmu_dsa_pt[n] < self.minPtSTA: return False
         return True
 
 

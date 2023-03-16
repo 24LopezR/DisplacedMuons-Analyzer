@@ -15,7 +15,7 @@ WORKPATH = ''
 for level in runningfile.split('/')[:-1]:
     WORKPATH += level
     WORKPATH += '/'
-EOSPATH = '/eos/user/r/rlopezru/Cosmics-Analyzer_out/Analyzer/'
+EOSPATH = '/eos/user/r/rlopezru/DisplacedMuons-Analyzer_out/Analyzer/'
 
 
 if __name__ == '__main__':

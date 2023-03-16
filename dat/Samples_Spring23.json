@@ -1,10 +1,45 @@
 {
     "Cosmics_2022C": [
         {
-            "ntuples_from_AOD_nsegments2": "/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_AOD-Ntuples/230314_142733/0000"
+            "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_AOD-Ntuples/230314_142733/0000",
+            "MiniAOD-Ntuples":            "/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_MiniAOD-Ntuples/230315_170507/0000",
+            "AOD-MiniAOD_nsegments2":     " ",
+            "MiniAOD-Ntuples_nsegments2": " "
         }
     ],
     "HTo2LongLived_400_150_4000": [
+        {
+            "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_AOD-Ntuples/230315_142030/0000",
+            "MiniAOD-Ntuples":            "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD-Ntuples/230315_150437/0000",
+            "AOD-MiniAOD_nsegments2":     "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_MiniAOD/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD_CMSSW_12_4_11_patch3_nsegments2/230314_084718/0000",
+            "MiniAOD-Ntuples_nsegments2": " "
+        }
+    ],
+    "HTo2LongLived_125_20_1300": [
+        {
+            "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-1300mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-1300mm_AOD-Ntuples/230315_141804/0000",
+            "MiniAOD-Ntuples":            "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-1300mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-1300mm_MiniAOD-Ntuples/230315_150053/0000",
+            "AOD-MiniAOD_nsegments2":     " ",
+            "MiniAOD-Ntuples_nsegments2": " "
+        }
+    ],
+    "HTo2LongLived_125_20_130": [
+        {
+            "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-130mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-130mm_AOD-Ntuples/230315_143057/0000",
+            "MiniAOD-Ntuples":            "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-130mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-130mm_MiniAOD-Ntuples/230315_150137/0000",
+            "AOD-MiniAOD_nsegments2":     "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_MiniAOD/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-130mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-130mm_MiniAOD_CMSSW_12_4_11_patch3_nsegments2/230315_114156/0000",
+            "MiniAOD-Ntuples_nsegments2": " "
+        }
+    ],
+    "HTo2LongLived_125_20_13": [
+        {
+            "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-13mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-13mm_AOD-Ntuples/230315_141925/0000",
+            "MiniAOD-Ntuples":            "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-13mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-13mm_MiniAOD-Ntuples/230315_150221/0000",
+            "AOD-MiniAOD_nsegments2":     " ",
+            "MiniAOD-Ntuples_nsegments2": " "
+        }
+    ],
+    "-": [
         {
             "miniAOD_from_AOD_nsegments2": "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_MiniAOD/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD_CMSSW_12_4_11_patch3_nsegments2/230314_084718/0000",
             "miniAOD_from_AOD_nstations2": "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_MiniAOD/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD_CMSSW_12_4_11_patch3_nstations2/230314_090217/0000",

@@ -6,7 +6,7 @@ class Launcher:
 
 
     def __init__(self, filedir, tag, cut_file):
-        WORKDIR = "/afs/cern.ch/user/r/rlopezru/private/ntuplizer_test/CMSSW_12_4_0/src/Analysis/Cosmics-Analyzer/"
+        WORKDIR = "/afs/cern.ch/user/r/rlopezru/private/ntuplizer_test/CMSSW_13_0_0_pre4/src/Analysis/DisplacedMuons-Analyzer/"
         # Read input args
         if filedir: self.filedir = filedir
         self.tag = tag
@@ -22,7 +22,7 @@ class Launcher:
         if not os.path.exists(self.condor_dir): os.makedirs(self.condor_dir)
         
         # Declare histograms dir and list
-        self.hists_dir = "/eos/user/r/rlopezru/Cosmics-Analyzer_out/Analyzer/temp_hists/"+self.tag+"/"
+        self.hists_dir = "/eos/user/r/rlopezru/DisplacedMuons-Analyzer_out/Analyzer/temp_hists/"+self.tag+"/"
         if not os.path.exists(self.hists_dir): os.makedirs(self.hists_dir)
         self.joint_hists_name = {}
         self.joint_hists_name = self.hists_dir+'full/hists_'+self.tag+'.root'
