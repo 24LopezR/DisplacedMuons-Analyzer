@@ -81,13 +81,13 @@ class DTree:
                                                                        self.dtpaths[i],
                                                                        self.cutsFilename,
                                                                        self.tag)
-            sh_filename = self.condor_dir+"bash_{0}_{1}.sh".format(self.name, i)
+            sh_filename = self.condorDir+"bash_{0}_{1}.sh".format(self.name, i)
             with open(sh_filename,"w") as f_sh:
                 f_sh.write(self.condorSh_template.format(command))
 
-        sub_filename = self.condor_dir+"condor_{0}.sub".format(self.name)
+        sub_filename = self.condorDir+"condor_{0}.sub".format(self.name)
         with open(sub_filename,"w") as f_sub:
-            f_sub.write(self.condorSub_template.format(sh_filename, self.condor_dir, self.name))
+            f_sub.write(self.condorSub_template.format(self.condorDir, self.name))
         os.system("condor_submit "+sub_filename+" --batch-name "+self.name)
 
     def merge(self):
