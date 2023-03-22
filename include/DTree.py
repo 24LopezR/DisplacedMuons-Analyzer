@@ -17,27 +17,6 @@ class DTree:
         self.isData = isData
         self.tag = tag # esto se da por linea de comandos al correr fill.py
 
-        self.dtpaths = []
-        self.dtfiles = []
-        self.dtrees  = []
-        for _file in os.listdir(self.location):
-            if '.root' not in _file: continue
-            ftfile = TFile(location + _file)
-            ttree = ftfile.Get('Events')
-            self.dtpaths.append(location + _file)
-            self.dtfiles.append(ftfile)
-            self.dtrees.append(ttree)
-
-        self.count = 0.
-        if self.isData:
-            print(self.dtrees[0].GetEntries())
-            for dtree in self.dtrees:
-                self.count += dtree.GetEntries()
-        
-        self.outHistFiles = []
-
-        self.printSample() 
-        
         # ---------------------------------------------------------------------------------------------------------
         # Get useful directories, paths and filenames
         self.WORKDIR = os.getcwd() + '/'
@@ -53,17 +32,46 @@ class DTree:
         self.histsDir = "/eos/user/r/rlopezru/DisplacedMuons-Analyzer_out/Analyzer/temp_hists/"+self.tag+"/"
         if not os.path.exists(self.histsDir): os.makedirs(self.histsDir)
         # ----------------------------------------------------------------------------------------------------------
+        
+        self.dtpaths = []
+        self.dtfiles = []
+        self.dtrees  = []
+        self.outHistFiles = []
+        for i,_file in enumerate(os.listdir(self.location)):
+            if '.root' not in _file: continue
+            ftfile = TFile(location + _file)
+            ttree = ftfile.Get('Events')
+            self.dtpaths.append(location + _file)
+            self.dtfiles.append(ftfile)
+            self.dtrees.append(ttree)
+            outHistFilename = self.histsDir+'hists_{0}_{1}.root'.format(self.name, i)
+            self.outHistFiles.append(outHistFilename) # have a register of the output files with the histograms
+        self.closeFiles()
+
+        self.count = 0.
+        if self.isData:
+            for dtree in self.dtrees:
+                self.count += dtree.GetEntries()
+        
+        self.printSample() 
+        
+
+    def getHistsDir(self):
+        return self.histsDir
+
+    def getMergedHistsFile(self):
+        return self.targetFile
 
     def printSample(self):
-        print("#################################")
+        print(50*"-")
         print("Sample Name: ", self.name)
         print("Sample Location: ", self.location)
         print("Sample IsData: ", self.isData)
         print("Event count: ", self.count)
-        print("#################################")
+        print(50*"-")
 
     def closeFiles(self):
-        for _file in self.ftfiles:
+        for _file in self.dtfiles:
             _file.Close()
 
     def process(self, outHistFile):
@@ -73,11 +81,9 @@ class DTree:
         self.cutsFilename = cutsFilename
 
         for i,tree in enumerate(self.dtrees):
-            outHistFilename = self.histsDir+'hists_{0}_{1}.root'.format(self.name, i)
-            self.outHistFiles.append(outHistFilename) # have a register of the output files with the histograms
             # aqui hay que llamar a loopevents.py
             command = "python3 {0} -o {1} -i {2} -c {3} -t {4}".format(self.scriptLoc,
-                                                                       outHistFilename,
+                                                                       self.outHistFiles[i],
                                                                        self.dtpaths[i],
                                                                        self.cutsFilename,
                                                                        self.tag)
@@ -91,4 +97,15 @@ class DTree:
         os.system("condor_submit "+sub_filename+" --batch-name "+self.name)
 
     def merge(self):
-        return
+        self.targetFile = self.histsDir + 'merged_hists_{0}.root'.format(self.name)
+        if os.path.exists(self.targetFile): 
+            print('>> Merged file {0} already exists'.format(self.targetFile))
+            return
+        print('>> Merging files with following details:')
+        print('    - location: {0}'.format(self.histsDir))
+        print('    - sample:   {0}'.format(self.name))
+        command = 'hadd {0} '.format(self.targetFile)
+        for _file in self.outHistFiles:
+            command += '{0} '.format(_file)
+        os.system(command)
+        print('>> Merging done')

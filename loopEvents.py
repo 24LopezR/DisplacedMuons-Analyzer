@@ -3,6 +3,7 @@ import os
 from argparse import ArgumentParser
 from include.MuonPlotHandler import MuonPlotHandler
 from include.TrackPlotHandler import TrackPlotHandler
+from include.PlotHandler import PlotHandler
 from include.Debugger import Debugger
 import include.cfg as cfg
 
@@ -28,13 +29,14 @@ if __name__ == '__main__':
     with open(args.cuts_filename, 'r') as f:
         cuts_selection = ''.join(f.readlines())
 
-    trackPlotHandle = TrackPlotHandler(args.hfname+'_tracks.root', cuts_selection)
-    muonPlotHandle  = MuonPlotHandler(args.hfname+'_muons.root', cuts_selection)
+    #trackPlotHandle = TrackPlotHandler(args.hfname+'_tracks.root', cuts_selection)
+    #muonPlotHandle  = MuonPlotHandler(args.hfname+'_muons.root', cuts_selection)
+    plotHandle  = PlotHandler(args.hfname, cuts_selection)
     for i,ev in enumerate(_tree):
         if i%1000==0: print("    - Events processed: {0}".format(str(i)))
-        trackPlotHandle.processEvent(ev)
-        muonPlotHandle.processEvent(ev)
+        plotHandle.processEvent(ev)
+        #muonPlotHandle.processEvent(ev)
         #if i>10000: break
     if os.path.exists(args.hfname): os.system('rm {0}'.format(args.hfname))
-    trackPlotHandle.write()
-    muonPlotHandle.write()
+    plotHandle.write()
+    #muonPlotHandle.write()

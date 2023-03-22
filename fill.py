@@ -46,6 +46,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
    
     gTag = args.tag
+    cuts_filename = WORKPATH + args.cuts_filename
  
     # Set debugging mode
     with open(WORKPATH+'include/cfg.py','w') as f:
@@ -64,16 +65,19 @@ if __name__ == '__main__':
     trees_nsegmentsFilter.append(DTree('HTo2LongLived_125_20_130_nseg2',  'H #rightarrow SS (125,20,130)',   dat['HTo2LongLived_125_20_130']['MiniAOD-Ntuples_nsegments2'],   gTag, isData = False))
     trees_nsegmentsFilter.append(DTree('HTo2LongLived_125_20_13_nseg2',   'H #rightarrow SS (125,20,13)',    dat['HTo2LongLived_125_20_13']['MiniAOD-Ntuples_nsegments2'],    gTag, isData = False))
     
+    # Empty condor folder
+    if args.condor:
+        os.system('rm {0}/condor/{1}/*'.format(WORKPATH, args.tag))
 
     # Launch jobs
     for dtree in trees_originalFilter:
         if args.condor:
-            dtree.launchJobs(args.cuts_filename)
+            dtree.launchJobs(cuts_filename)
         else:
-            dtree.loop(args.cuts_filename)
+            dtree.loop(cuts_filename)
 
     for dtree in trees_nsegmentsFilter:
         if args.condor:
-            dtree.launchJobs(args.cuts_filename)
+            dtree.launchJobs(cuts_filename)
         else:
-            dtree.loop(args.cuts_filename)
+            dtree.loop(cuts_filename)
