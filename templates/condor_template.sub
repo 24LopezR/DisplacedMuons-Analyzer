@@ -1,9 +1,9 @@
 universe        = vanilla
 executable      = {0} 
 arguments       = $(ProcID)
-output          = {1}.out
-error           = {1}.err
-log             = {1}.log
+output          = {1}/log_{2}.out
+error           = {1}/log_{2}.err
+log             = {1}/log_{2}.log
 Notify_user     = rlopezru@cern.ch
 +JobFlavour     = "workday"
-queue 1
+queue filename matching ({1}/bash_{2}*sh)
