@@ -96,6 +96,19 @@ class DTree:
             f_sub.write(self.condorSub_template.format(self.condorDir, self.name))
         os.system("condor_submit "+sub_filename+" --batch-name "+self.name)
 
+    def loop(self, cutsFilename):
+        self.cutsFilename = cutsFilename
+
+        for i,dtree in enumerate(self.dtrees[0:1]):
+            print(' -> Processing file {0}'.format(self.dtpaths[i]))
+            command = "python3 {0} -o {1} -i {2} -c {3} -t {4}".format(self.scriptLoc,
+                                                                       self.outHistFiles[i],
+                                                                       self.dtpaths[i],
+                                                                       self.cutsFilename,
+                                                                       self.tag)
+            os.system(command)
+
+
     def merge(self):
         self.targetFile = self.histsDir + 'merged_hists_{0}.root'.format(self.name)
         if os.path.exists(self.targetFile): 

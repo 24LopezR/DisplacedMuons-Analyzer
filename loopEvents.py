@@ -3,7 +3,7 @@ import os
 from argparse import ArgumentParser
 from include.MuonPlotHandler import MuonPlotHandler
 from include.TrackPlotHandler import TrackPlotHandler
-from include.PlotHandler import PlotHandler
+from include.MCSignalPlotHandler import MCSignalPlotHandler
 from include.Debugger import Debugger
 import include.cfg as cfg
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     #trackPlotHandle = TrackPlotHandler(args.hfname+'_tracks.root', cuts_selection)
     #muonPlotHandle  = MuonPlotHandler(args.hfname+'_muons.root', cuts_selection)
-    plotHandle  = PlotHandler(args.hfname, cuts_selection)
+    plotHandle  = MCSignalPlotHandler(args.hfname, cuts_selection)
     for i,ev in enumerate(_tree):
         if i%1000==0: print("    - Events processed: {0}".format(str(i)))
         plotHandle.processEvent(ev)

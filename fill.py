@@ -8,6 +8,24 @@ from include.Launcher import Launcher
 import include.cfg as cfg
 from include.DTree import DTree
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+########################################## FUNCTIONS #############################################
+def printConfig(args):
+    print(bcolors.WARNING + 20*'#' + ' DISPLACED MUON ANALYZER ' + 20*'#')
+    print(' >> -t / --tag:    {0}'.format(args.tag))
+    print(' >> -c / --cuts:   {0}'.format(args.cuts_filename))
+    print(' >> --no-run:      {0}'.format(not args.run))
+    print(' >> -q / --condor: {0}'.format(args.condor))
+    print(65*'#' + bcolors.ENDC)
+
+
 #r.gStyle.SetLabelFont(42)
 ################################# GLOBAL VARIABLES DEFINITION ####################################
 
@@ -43,8 +61,12 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--tag', dest='tag')
     parser.add_argument('-d', '--debug', dest='debug', action='store_true')
     parser.add_argument('-q', '--queue', dest='condor', action= 'store_true')
+    parser.add_argument('--no-run', dest='run', action= 'store_false')
     args = parser.parse_args()
+
+    printConfig(args)
    
+    run = args.run
     gTag = args.tag
     cuts_filename = WORKPATH + args.cuts_filename
  
@@ -65,19 +87,21 @@ if __name__ == '__main__':
     trees_nsegmentsFilter.append(DTree('HTo2LongLived_125_20_130_nseg2',  'H #rightarrow SS (125,20,130)',   dat['HTo2LongLived_125_20_130']['MiniAOD-Ntuples_nsegments2'],   gTag, isData = False))
     trees_nsegmentsFilter.append(DTree('HTo2LongLived_125_20_13_nseg2',   'H #rightarrow SS (125,20,13)',    dat['HTo2LongLived_125_20_13']['MiniAOD-Ntuples_nsegments2'],    gTag, isData = False))
     
-    # Empty condor folder
-    if args.condor:
-        os.system('rm {0}/condor/{1}/*'.format(WORKPATH, args.tag))
 
-    # Launch jobs
-    for dtree in trees_originalFilter:
+    if run:
+        # Empty condor folder
         if args.condor:
-            dtree.launchJobs(cuts_filename)
-        else:
-            dtree.loop(cuts_filename)
+            os.system('rm {0}/condor/{1}/*'.format(WORKPATH, args.tag))
 
-    for dtree in trees_nsegmentsFilter:
-        if args.condor:
-            dtree.launchJobs(cuts_filename)
-        else:
-            dtree.loop(cuts_filename)
+        # Launch jobs
+        for dtree in trees_originalFilter:
+            if args.condor:
+                dtree.launchJobs(cuts_filename)
+            else:
+                dtree.loop(cuts_filename)
+
+        for dtree in trees_nsegmentsFilter:
+            if args.condor:
+                dtree.launchJobs(cuts_filename)
+            else:
+                dtree.loop(cuts_filename)
