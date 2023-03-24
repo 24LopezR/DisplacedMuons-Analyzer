@@ -35,7 +35,7 @@ class DTree:
         
         self.dtpaths = []
         self.dtfiles = []
-        self.dtrees  = []
+        #self.dtrees  = []
         self.outHistFiles = []
         for i,_file in enumerate(os.listdir(self.location)):
             if '.root' not in _file: continue
@@ -43,16 +43,17 @@ class DTree:
             ttree = ftfile.Get('Events')
             self.dtpaths.append(location + _file)
             self.dtfiles.append(ftfile)
-            self.dtrees.append(ttree)
+            #self.dtrees.append(ttree)
             outHistFilename = self.histsDir+'hists_{0}_{1}.root'.format(self.name, i)
             self.outHistFiles.append(outHistFilename) # have a register of the output files with the histograms
         self.closeFiles()
 
+        '''
         self.count = 0.
         if self.isData:
             for dtree in self.dtrees:
                 self.count += dtree.GetEntries()
-        
+        '''
         self.printSample() 
         
 
@@ -67,7 +68,7 @@ class DTree:
         print("Sample Name: ", self.name)
         print("Sample Location: ", self.location)
         print("Sample IsData: ", self.isData)
-        print("Event count: ", self.count)
+        #print("Event count: ", self.count)
         print(50*"-")
 
     def closeFiles(self):
@@ -80,13 +81,13 @@ class DTree:
     def launchJobs(self, cutsFilename):
         self.cutsFilename = cutsFilename
 
-        for i,tree in enumerate(self.dtrees):
+        for i,path in enumerate(self.dtpaths):
             # aqui hay que llamar a loopevents.py
-            command = "python3 {0} -o {1} -i {2} -c {3} -t {4}".format(self.scriptLoc,
-                                                                       self.outHistFiles[i],
-                                                                       self.dtpaths[i],
-                                                                       self.cutsFilename,
-                                                                       self.tag)
+            command = "python3 {0} -o {1} -i {2} -c {3} --name {4}".format(self.scriptLoc,
+                                                                                  self.outHistFiles[i],
+                                                                                  path,
+                                                                                  self.cutsFilename,
+                                                                                  self.name)
             sh_filename = self.condorDir+"bash_{0}_{1}.sh".format(self.name, i)
             with open(sh_filename,"w") as f_sh:
                 f_sh.write(self.condorSh_template.format(command))
@@ -99,13 +100,13 @@ class DTree:
     def loop(self, cutsFilename):
         self.cutsFilename = cutsFilename
 
-        for i,dtree in enumerate(self.dtrees[0:1]):
-            print(' -> Processing file {0}'.format(self.dtpaths[i]))
-            command = "python3 {0} -o {1} -i {2} -c {3} -t {4}".format(self.scriptLoc,
-                                                                       self.outHistFiles[i],
-                                                                       self.dtpaths[i],
-                                                                       self.cutsFilename,
-                                                                       self.tag)
+        for i,path in enumerate(self.dtpaths[0:1]):
+            print(' -> Processing file {0}'.format(path))
+            command = "python3 {0} -o {1} -i {2} -c {3} --name {4}".format(self.scriptLoc,
+                                                                                  self.outHistFiles[i],
+                                                                                  path,
+                                                                                  self.cutsFilename,
+                                                                                  self.name)
             os.system(command)
 
 

@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from include.MuonPlotHandler import MuonPlotHandler
 from include.TrackPlotHandler import TrackPlotHandler
 from include.MCSignalPlotHandler import MCSignalPlotHandler
+from include.CosmicsPlotHandler import CosmicsPlotHandler
 from include.Debugger import Debugger
 import include.cfg as cfg
 
@@ -18,25 +19,29 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--filename', dest='fname') # name of file containing the Ntuple
     parser.add_argument('-o', '--histfilename', dest='hfname') # name of the output file with the hists
     parser.add_argument('-c', '--cuts', dest='cuts_filename')
-    parser.add_argument('-t', '--tag', dest='tag')
+    parser.add_argument('-n', '--name', dest='name')
     args = parser.parse_args()
+    ### Read args
+    inputFileName = args.fname
+    outHistsFileName = args.hfname
+    cutsFilePath = args.cuts_filename
+    sampleName = args.name
 
-
-    # Open data file
-    _file = r.TFile(args.fname)
+    ### Open data file
+    _file = r.TFile(inputFileName)
     _tree = _file.Get("Events")
- 
-    with open(args.cuts_filename, 'r') as f:
-        cuts_selection = ''.join(f.readlines())
 
-    #trackPlotHandle = TrackPlotHandler(args.hfname+'_tracks.root', cuts_selection)
-    #muonPlotHandle  = MuonPlotHandler(args.hfname+'_muons.root', cuts_selection)
-    plotHandle  = MCSignalPlotHandler(args.hfname, cuts_selection)
+    ### Define Plot Handler
+    if 'HTo2LL' in sampleName:
+        plotHandle  = MCSignalPlotHandler(outHistsFileName, cutsFilePath, sampleName)
+    if 'Cosmics' in sampleName:
+        plotHandle  = CosmicsPlotHandler(outHistsFileName, cutsFilePath, sampleName)
+    
+    ### Process events
     for i,ev in enumerate(_tree):
         if i%1000==0: print("    - Events processed: {0}".format(str(i)))
         plotHandle.processEvent(ev)
-        #muonPlotHandle.processEvent(ev)
-        #if i>10000: break
-    if os.path.exists(args.hfname): os.system('rm {0}'.format(args.hfname))
+     
+    ### Write out to file
+    if os.path.exists(outHistsFileName): os.system('rm {0}'.format(outHistsFileName))
     plotHandle.write()
-    #muonPlotHandle.write()

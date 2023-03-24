@@ -5,16 +5,18 @@ import numpy as np
 from include.Debugger import Debugger
 from include.utils import passIDSelection, angle
 from include.DisplacedMuonFilter import DisplacedMuonFilter
+from include.PlotHandler import PlotHandler
 import include.cfg as cfg
+
 
 # Config debugger
 debug = Debugger(cfg.DEBUG)
 
-class PlotHandler:
+class CosmicsPlotHandler(PlotHandler):
 
-
-    def __init__(self, histfilename, cuts_selection):    
-        self.filename = histfilename
+    def __init__(self, histfilename, cutsFilePath, sampleName):
+   
+        super().__init__(histfilename, cutsFilePath, sampleName)
 
         ## MuonFilter object
         #self.mfilter = DisplacedMuonFilter(3.5, 3.5, 0)
@@ -82,21 +84,13 @@ class PlotHandler:
             self.h_eff_2D[collection]          = r.TEfficiency("h_eff_2D_{0}".format(collection), "Efficiency cosmic muons;|d_{0}| (cm);|d_{z}| (cm);Efficiency",6,
                                                                np.array([0., 2., 5., 10., 30., 50., 70.]), 6,np.array([0., 8., 20., 40., 60., 90., 140.]))
             self.h_dxy_dz_2D[collection]       = r.TH2F("h_dxy_dz_2D_{0}".format(collection), "Displacement cosmic muons;|d_{0}| (cm);|d_{z}| (cm);N events",100,0,500,100,0,700)
-        '''
-        self.h_muons_filter                  = r.TH1F("h_muons_filter",r";Filter stage;N muons lost",3,0,3) 
-        self.h_numberOfMatches_dmu_dsa       = r.TH1F("h_numberOfMatches_dmu_dsa",r";numberOfMatches;N events",10,0,10)
-        self.h_nsegments_dmu_dsa             = r.TH1F("h_nsegments_dmu_dsa",r";nsegments;N events",8,0,8)
-        self.h_nmatches_nsegments_2D_dmu_dsa = r.TH2F("h_nmatches_nsegments_2D_dmu_dsa", ";numberOfMatches;nsegments;N events",15,0,15,15,0,15)
-        self.h_dxy_1                         = r.TH1F("h_dxy_dmu_dsa_1",r";|d_{xy}| (cm);N events",100,0,800)
-        self.h_dxy_2                         = r.TH1F("h_dxy_dmu_dsa_2",r";|d_{xy}| (cm);N events",100,0,800)
-        self.h_dxy_3                         = r.TH1F("h_dxy_dmu_dsa_3",r";|d_{xy}| (cm);N events",100,0,800)
-        self.h_nstations_dmu_dsa     = r.TH1F("h_nstations_dmu_dsa",r";nStations(DT+CSC);N events",6,0,6)
-        self.h_nsegments_nstations_2D_dmu_dsa = r.TH2F("h_nsegments_nstations_2D_dmu_dsa", ";nsegments;nStations(DT+CSC);N events",15,0,15,6,0,6) 
-        '''
-        ##### Define cuts of the analysis
-        self.cuts = {}
-        for collection in self.collections:
-            self.cuts[collection] = cuts_selection.format(collection)
+        
+        ### Parse config file
+        self.readCuts()
+        
+
+    def readCuts(self):
+        super().readCuts()
 
 
     def fillVariableHistograms(self, ev, n, collection):
@@ -105,10 +99,6 @@ class PlotHandler:
         self.h_eta[collection].Fill(eval('ev.{0}_eta[n]'.format(collection)))
         self.h_phi[collection].Fill(eval('ev.{0}_phi[n]'.format(collection)))
         self.h_dxy[collection].Fill(eval('abs(ev.{0}_dxy[n])'.format(collection)))
-        ### Fill dxy filter stages plots
-        #if self.passMuonFilter(ev, n, toApply=[0,1,1]): self.h_dxy_1.Fill(ev.dmu_dsa_dxy[n])
-        #if self.passMuonFilter(ev, n, toApply=[1,0,1]): self.h_dxy_2.Fill(ev.dmu_dsa_dxy[n])
-        #if self.passMuonFilter(ev, n, toApply=[1,1,0]): self.h_dxy_3.Fill(ev.dmu_dsa_dxy[n])
         self.h_dz[collection].Fill(eval('abs(ev.{0}_dz[n])'.format(collection)))
         self.h_Nhits[collection].Fill(eval('ev.{0}_nValidMuonHits[n]'.format(collection)))
         self.h_NDThits[collection].Fill(eval('ev.{0}_nValidMuonDTHits[n]'.format(collection)))
@@ -134,64 +124,81 @@ class PlotHandler:
         if eval('abs(ev.{0}_dxy[n])'.format(collection)) < 2: self.h_eff_dz_cutdxy[collection].Fill(hasProbe, eval('abs(ev.{0}_dz[n])'.format(collection)))
         self.h_eff_2D[collection].Fill(hasProbe, eval('abs(ev.{0}_dxy[n])'.format(collection)), eval('abs(ev.{0}_dz[n])'.format(collection)))
 
+    '''
+    Perform an OR of the triggers
+    '''
+    def evalTriggers(self, ev):
+        for t in self.triggers:
+            if eval(t): return True
+        return False 
+
+    '''
+    Check if a muon passes the defined cuts
+    '''
+    def evalCuts(self, ev, n, collection):
+        for c in self.cuts[collection]:
+            if not eval(c): return False
+        return True
+
 
     def processEvent(self, ev):
+        ## Check if events pass the trigger
+        if not self.evalTriggers(ev): return
+
+        # -------------------------------------------------------------------------------
         ## First, process tracks
         for collection in self.collections[0:2]:
             if eval('ev.n{0}'.format(collection)) < 1: continue
+
+            ## Count number of muons in each hemisphere
             n_up, n_down = 0,0
             for n in range(eval('ev.n{0}'.format(collection))):
                 if eval('ev.{0}_phi[n]'.format(collection)) < 0: n_down += 1
                 else: n_up += 1
-            for n in range(eval('ev.n{0}'.format(collection))):
+
+            ## Loop over muons in event
+            ntotal = eval('ev.n{0}'.format(collection))
+            for n in range(ntotal):
                 ## Apply cuts
-                if np.prod(eval(self.cuts[collection])):
-                    ## Fill variable plots
-                    self.fillVariableHistograms(ev, n, collection)
-                    ## Check if muon passes ID selection
-                    passID = passIDSelection(ev, n, collection)
-                    cos_alpha_temp = None
-                    if passID:
-                        hasProbe, cos_alpha_temp, i = self.findProbeTracks(ev, n, collection, eval('ev.n{0}'.format(collection)))
-                        ## Fill efficiency plots
-                        self.fillEfficiencyHistograms(ev, n, collection, hasProbe)
-                        if hasProbe: self.fillDimuonVariableHistograms(ev, n, i, cos_alpha_temp, collection)
-                        break
+                if not self.evalCuts(ev, n, collection): continue
+                
+                ## Fill variable plots (thes histograms will only have the cuts in the config file, but not the ones in the tnp ID)
+                self.fillVariableHistograms(ev, n, collection)
+                self.h_nmuons[collection].Fill(eval('ev.n{0}'.format(collection)))
+                self.h_nmuons_down[collection].Fill(n_down)
+                self.h_nmuons_up[collection].Fill(n_up)
 
-                    self.h_nmuons[collection].Fill(eval('ev.n{0}'.format(collection)))
-                    self.h_nmuons_down[collection].Fill(n_down)
-                    self.h_nmuons_up[collection].Fill(n_up)
+                ### Tag and probe
+                passID = self.tagNprobeTracks(collection, ev, n, ntotal)
+        # -------------------------------------------------------------------------------
 
+
+        # -------------------------------------------------------------------------------
         ## Secondly, process displacedMuon collection
+        ## Get the ids of DSA and DGL
         ndsa_ids, ndgl_ids = self.count_muons(ev)
-        for ndsa in ndsa_ids:
-            ### Apply cuts
-            if not np.prod(eval(self.cuts['dmu_dsa'])): continue
-            '''
-            ### Fill muon numberOfMatches and nsegments
-            if ev.dmu_isDSA[ndsa] and not ev.dmu_isDGL[ndsa] and not ev.dmu_isDTK[ndsa]:# and (ev.dmu_dsa_dtStationsWithValidHits[ndsa]+ev.dmu_dsa_cscStationsWithValidHits[ndsa])>=2:
-                self.h_numberOfMatches_dmu_dsa.Fill(ev.dmu_numberOfMatches[ndsa])
-                self.h_nsegments_dmu_dsa.Fill(ev.dmu_dsa_nsegments[ndsa])
-                self.h_nstations_dmu_dsa.Fill(ev.dmu_dsa_dtStationsWithValidHits[ndsa]+ev.dmu_dsa_cscStationsWithValidHits[ndsa])
-                self.h_nmatches_nsegments_2D_dmu_dsa.Fill(ev.dmu_numberOfMatches[ndsa],ev.dmu_dsa_nsegments[ndsa])
-                self.h_nsegments_nstations_2D_dmu_dsa.Fill(ev.dmu_dsa_nsegments[ndsa],ev.dmu_dsa_dtStationsWithValidHits[ndsa]+ev.dmu_dsa_cscStationsWithValidHits[ndsa])
-            '''
-            ### Apply filter
-            #if not self.passMuonFilter(ev, ndsa): continue
-            ### Tag and probe
-            passID = self.tagNprobe('dmu_dsa', ev, ndsa, ndsa_ids)
-            if passID: break
-        for ndgl in ndgl_ids:
-            ### Apply cuts
-            if not np.prod(eval(self.cuts['dmu_dgl'])): continue
-            ### Apply filter
-            #if not self.passMuonFilter(ev, ndgl): continue
-            ### Tag and probe
-            passID = self.tagNprobe('dmu_dgl', ev, ndgl, ndgl_ids)
-            if passID: break
+        for collection in self.collections[2:4]:
+            if ev.ndmu < 1: continue
+
+            ## Loop over muons in event
+            if 'dsa' in collection: ids = ndsa_ids
+            if 'dgl' in collection: ids = ndgl_ids
+            for n in ids:
+                ### Apply cuts
+                if not self.evalCuts(ev, n, collection): continue
+
+                ### Apply filter (not anymore)
+                #if not self.passMuonFilter(ev, ndsa): continue
+
+                # Fill variable histograms
+                self.fillVariableHistograms(ev, n, collection)
+
+                ### Tag and probe
+                passID = self.tagNprobeMuons(collection, ev, n, ndsa_ids)
+        # -------------------------------------------------------------------------------
 
 
-    def tagNprobe(self, collection, ev, n, ids):
+    def tagNprobeMuons(self, collection, ev, n, ids):
         ## Check if muon passes ID selection
         passID = passIDSelection(ev, n, collection)
         cos_alpha_temp = None
@@ -206,6 +213,19 @@ class PlotHandler:
         return passID
 
 
+    def tagNprobeTracks(self, collection, ev, n, ntotal):
+        ## Check if muon passes ID selection
+        passID = passIDSelection(ev, n, collection)
+        cos_alpha_temp = None
+        if passID:
+            debug.print("ID passed by muon {0}".format(n), "INFO")
+            hasProbe, cos_alpha_temp, i = self.findProbeTracks(ev, n, collection, ntotal)
+            # Fill efficiency histograms
+            self.fillEfficiencyHistograms(ev, n, collection, hasProbe)
+            if hasProbe: self.fillDimuonVariableHistograms(ev, n, i, cos_alpha_temp, collection)
+        return passID
+
+
     '''
     Given one muon (tag), loop through the other muons in the event to find a matching probe.
     '''
@@ -214,14 +234,14 @@ class PlotHandler:
         cos_alpha = None
     
         if col=='dmu_dsa':
-            phi_tag = eval('ev.{0}_phi[n]'.format(col))
-            eta_tag = eval('ev.{0}_eta[n]'.format(col))
+            phi_tag = ev.dmu_dsa_phi[n]
+            eta_tag = ev.dmu_dsa_eta[n]
             theta_tag = 2 * np.arctan(np.exp(-eta_tag)) - np.pi/2    
             for i in ids:
                 if i == n: continue
-                if eval('ev.{0}_nValidMuonDTHits[i]+ev.{0}_nValidMuonDTHits[i]'.format(col)) <= 0: continue
-                phi_temp   = eval('ev.{0}_phi[i]'.format(col))
-                eta_temp   = eval('ev.{0}_eta[i]'.format(col))
+                if ev.dmu_dsa_nValidMuonDTHits[i]+ev.dmu_dsa_nValidMuonDTHits[i] <= 0: continue
+                phi_temp   = ev.dmu_dsa_phi[i]
+                eta_temp   = ev.dmu_dsa_eta[i]
                 theta_temp = 2 * np.arctan(np.exp(-eta_temp)) - np.pi/2
                 v_tag      = [np.cos(theta_tag)*np.cos(phi_tag), np.cos(theta_tag)*np.sin(phi_tag), np.sin(theta_tag)]
                 v_temp     = [np.cos(theta_temp)*np.cos(phi_temp), np.cos(theta_temp)*np.sin(phi_temp), np.sin(theta_temp)]
@@ -232,14 +252,14 @@ class PlotHandler:
                     break
     
         if col=='dmu_dgl':
-            phi_tag = eval('ev.{0}_phi[n]'.format(col))
-            eta_tag = eval('ev.{0}_eta[n]'.format(col))
+            phi_tag = ev.dmu_dgl_phi[n]
+            eta_tag = ev.dmu_dgl_eta[n]
             theta_tag = 2 * np.arctan(np.exp(-eta_tag)) - np.pi/2
             for i in ids:
                 if i == n: continue
-                if eval('ev.{0}_pt[i]'.format(col)) <= 20: continue
-                phi_temp = eval('ev.{0}_phi[i]'.format(col))
-                eta_temp = eval('ev.{0}_eta[i]'.format(col))
+                if ev.dmu_dgl_pt[i] <= 20: continue
+                phi_temp = ev.dmu_dgl_phi[i]
+                eta_temp = ev.dmu_dgl_eta[i]
                 theta_temp = 2 * np.arctan(np.exp(-eta_temp)) - np.pi/2
                 v_tag      = [np.cos(theta_tag)*np.cos(phi_tag), np.cos(theta_tag)*np.sin(phi_tag), np.sin(theta_tag)]
                 v_temp     = [np.cos(theta_temp)*np.cos(phi_temp), np.cos(theta_temp)*np.sin(phi_temp), np.sin(theta_temp)]
@@ -259,16 +279,15 @@ class PlotHandler:
         existsProbe = False
         cos_alpha = None
 
-        if 'dsa' in col:
-            phi_tag = eval('ev.{0}_phi[n]'.format(col))
-            eta_tag = eval('ev.{0}_eta[n]'.format(col))
+        if col=='dsa':
+            phi_tag = ev.dsa_phi[n]
+            eta_tag = ev.dsa_eta[n]
             theta_tag = 2 * np.arctan(np.exp(-eta_tag)) - np.pi/2
-
             for i in range(ntotal):
                 if i == n: continue
-                if eval('ev.{0}_nValidMuonDTHits[i]+ev.{0}_nValidMuonDTHits[i]'.format(col)) <= 0: continue
-                phi_temp = eval('ev.{0}_phi[i]'.format(col))
-                eta_temp = eval('ev.{0}_eta[i]'.format(col))
+                if ev.dsa_nValidMuonDTHits[i]+ev.dsa_nValidMuonDTHits[i] <= 0: continue
+                phi_temp   = ev.dsa_phi[i]
+                eta_temp   = ev.dsa_eta[i]
                 theta_temp = 2 * np.arctan(np.exp(-eta_temp)) - np.pi/2
                 v_tag = [np.cos(theta_tag)*np.cos(phi_tag), np.cos(theta_tag)*np.sin(phi_tag), np.sin(theta_tag)]
                 v_temp = [np.cos(theta_temp)*np.cos(phi_temp), np.cos(theta_temp)*np.sin(phi_temp), np.sin(theta_temp)]
@@ -278,16 +297,16 @@ class PlotHandler:
                     existsProbe = True
                     break
 
-        if 'dgl' in col:
-            phi_tag = eval('ev.{0}_phi[n]'.format(col))
-            eta_tag = eval('ev.{0}_eta[n]'.format(col))
+        if col=='dgl':
+            phi_tag = ev.dgl_phi[n]
+            eta_tag = ev.dgl_eta[n]
             theta_tag = 2 * np.arctan(np.exp(-eta_tag)) - np.pi/2
 
             for i in range(ntotal):
                 if i == n: continue
-                if eval('ev.{0}_pt[i]'.format(col)) <= 20: continue
-                phi_temp = eval('ev.{0}_phi[i]'.format(col))
-                eta_temp = eval('ev.{0}_eta[i]'.format(col))
+                if ev.dgl_pt[i] <= 20: continue
+                phi_temp   = ev.dgl_phi[i]
+                eta_temp   = ev.dgl_eta[i]
                 theta_temp = 2 * np.arctan(np.exp(-eta_temp)) - np.pi/2
                 v_tag = [np.cos(theta_tag)*np.cos(phi_tag), np.cos(theta_tag)*np.sin(phi_tag), np.sin(theta_tag)]
                 v_temp = [np.cos(theta_temp)*np.cos(phi_temp), np.cos(theta_temp)*np.sin(phi_temp), np.sin(theta_temp)]
@@ -334,45 +353,8 @@ class PlotHandler:
         - toApply = [x,x,x]: indicates with 1 and 0 if each stage of the filter is applied
     '''
     def passMuonFilter(self, ev, n, toApply=[1,1,1]):
-        if ev.dmu_isDSA[n]:
-            if ev.dmu_isDGL[n] or ev.dmu_isDTK[n]:
-                if toApply[0] and not self.mfilter.layerOneFilter(ev, n):
-                    self.h_muons_filter.Fill(0)
-                    debug.print("Muon lost at layer 1 of filter", "INFO")
-                    return False
-            else:
-                if toApply[1] and not self.mfilter.layerTwoFilter(ev, n): 
-                    self.h_muons_filter.Fill(1)
-                    debug.print("Muon lost at layer 2 of filter", "INFO")
-                    return False
-        else:
-            if ev.dmu_isDGL[n] or ev.dmu_isDTK[n]:
-                if toApply[2] and not self.mfilter.layerThreeFilter(ev, n): 
-                    self.h_muons_filter.Fill(2)
-                    debug.print("Muon lost at layer 3 of filter", "INFO")
-                    return False
-            else: 
-                debug.print("Muon that has not standalone nor tracker track.", "WARNING")
-                return False
-        return True
+        super().passMuonFilter(ev, n, toApply)
 
 
     def write(self):
-        output = r.TFile(self.filename, "RECREATE")
-        for attr, value in self.__dict__.items():
-            if attr[0] == 'h' and type(value) == dict:
-                for key in value.keys():
-                    value[key].Write()
-                    debug.print(value[key].GetName()+" written to "+self.filename, "SUCCESS")
-        '''
-        self.h_muons_filter.Write()
-        self.h_dxy_1.Write()
-        self.h_dxy_2.Write()
-        self.h_dxy_3.Write()
-        self.h_nsegments_dmu_dsa.Write()
-        self.h_numberOfMatches_dmu_dsa.Write()
-        self.h_nmatches_nsegments_2D_dmu_dsa.Write()
-        self.h_nstations_dmu_dsa.Write()
-        self.h_nsegments_nstations_2D_dmu_dsa.Write()
-        '''
-        output.Close()
+        super().write()

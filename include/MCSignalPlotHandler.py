@@ -13,8 +13,9 @@ debug = Debugger(cfg.DEBUG)
 class MCSignalPlotHandler:
 
 
-    def __init__(self, histfilename, cuts_selection):    
-        self.filename = histfilename
+    def __init__(self, histfilename, cutsFilePath, sampleName):    
+        
+        super().__init__(histfilename, cutsFilePath, sampleName)
 
         ## MuonFilter object
         #self.mfilter = DisplacedMuonFilter(3.5, 3.5, 0)
@@ -83,10 +84,12 @@ class MCSignalPlotHandler:
                                                                np.array([0., 2., 5., 10., 30., 50., 70.]), 6,np.array([0., 8., 20., 40., 60., 90., 140.]))
             self.h_dxy_dz_2D[collection]       = r.TH2F("h_dxy_dz_2D_{0}".format(collection), "Displacement;|d_{0}| (cm);|d_{z}| (cm);N events",100,0,500,100,0,700)
         
-        ##### Define cuts of the analysis
-        self.cuts = {}
-        for collection in self.collections:
-            self.cuts[collection] = cuts_selection.format(collection)
+        ### Parse config file
+        self.readCuts()
+
+
+    def readCuts(self):
+        super().readCuts()
 
 
     def fillVariableHistograms(self, ev, n, collection):
