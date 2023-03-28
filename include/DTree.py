@@ -100,7 +100,7 @@ class DTree:
     def loop(self, cutsFilename):
         self.cutsFilename = cutsFilename
 
-        for i,path in enumerate(self.dtpaths[0:1]):
+        for i,path in enumerate(self.dtpaths):
             print(' -> Processing file {0}'.format(path))
             command = "python3 {0} -o {1} -i {2} -c {3} --name {4}".format(self.scriptLoc,
                                                                                   self.outHistFiles[i],
@@ -110,11 +110,14 @@ class DTree:
             os.system(command)
 
 
-    def merge(self):
+    def merge(self, force=False):
         self.targetFile = self.histsDir + 'merged_hists_{0}.root'.format(self.name)
         if os.path.exists(self.targetFile): 
             print('>> Merged file {0} already exists'.format(self.targetFile))
-            return
+            if force:
+                print('    - Removing file {0}'.format(self.targetFile)) 
+                os.system('rm {0}'.format(self.targetFile))
+            else: return
         print('>> Merging files with following details:')
         print('    - location: {0}'.format(self.histsDir))
         print('    - sample:   {0}'.format(self.name))

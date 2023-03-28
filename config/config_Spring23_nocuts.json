@@ -1,0 +1,27 @@
+{
+    "Cosmics_2022C": {
+            "triggers": ["HLT_L2Mu10_NoVertex_NoBPTX3BX"],
+            "tracks":   [],
+            "muons":    []
+    },
+    "HTo2LongLived_400_150_4000": {
+            "triggers": [],
+            "tracks": [],
+            "muons":  []
+    },
+    "HTo2LongLived_125_20_1300": {
+            "triggers": [],
+            "tracks": [],
+            "muons":  []
+    },
+    "HTo2LongLived_125_20_130": {
+            "triggers": [],
+            "tracks": [],
+            "muons":  []
+    },
+    "HTo2LongLived_125_20_13": {
+            "triggers": [],
+            "tracks": [],
+            "muons":  []
+    }
+}

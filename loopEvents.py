@@ -32,7 +32,7 @@ if __name__ == '__main__':
     _tree = _file.Get("Events")
 
     ### Define Plot Handler
-    if 'HTo2LL' in sampleName:
+    if 'HTo2LongLived' in sampleName:
         plotHandle  = MCSignalPlotHandler(outHistsFileName, cutsFilePath, sampleName)
     if 'Cosmics' in sampleName:
         plotHandle  = CosmicsPlotHandler(outHistsFileName, cutsFilePath, sampleName)

@@ -17,6 +17,8 @@ class CosmicsPlotHandler(PlotHandler):
     def __init__(self, histfilename, cutsFilePath, sampleName):
    
         super().__init__(histfilename, cutsFilePath, sampleName)
+        
+        self.collections = ['dsa', 'dgl', 'dmu_dsa','dmu_dgl']
 
         ## MuonFilter object
         #self.mfilter = DisplacedMuonFilter(3.5, 3.5, 0)
@@ -36,8 +38,7 @@ class CosmicsPlotHandler(PlotHandler):
         self.h_Nhits = {}
         self.h_NDThits = {}
         self.h_normalizedChi2 = {}
-        self.h_numberOfMatches = {}
-        
+        self.h_numberOfMatches = {} 
         self.h_charge_pt = {}
         self.h_cosalpha = {}
         self.h_dPhi = {}
@@ -51,7 +52,6 @@ class CosmicsPlotHandler(PlotHandler):
         self.h_eff_2D = {}
         self.h_dxy_dz_2D = {}
 
-        self.collections = ['dsa', 'dgl', 'dmu_dsa','dmu_dgl']
         for collection in self.collections:
             self.h_nmuons[collection]          = r.TH1F("h_muons_{0}".format(collection),r";N_{#mu};N events",6,0,6) 
             self.h_nmuons_down[collection]     = r.TH1F("h_muons_down_{0}".format(collection),r";N_{#mu}(#phi<0);N events",6,0,6) 
@@ -320,29 +320,7 @@ class CosmicsPlotHandler(PlotHandler):
 
 
     def count_muons(self, ev):
-        # Count number of muons that are dsa and dgl
-        ndsa_ids = []
-        ndgl_ids = []
-        nmuons = [0,0]
-        nmuons_up   = [0,0]
-        nmuons_down = [0,0]
-        for n in range(ev.ndmu):
-            if ev.dmu_isDSA[n]:
-                ndsa_ids.append(n)
-                nmuons[0] += 1
-                if ev.dmu_dsa_phi[n]<0: nmuons_down[0] += 1
-                else: nmuons_up[0] += 1
-            if ev.dmu_isDGL[n]:
-                ndgl_ids.append(n)
-                nmuons[1] += 1
-                if ev.dmu_dgl_phi[n]<0: nmuons_down[1] += 1
-                else: nmuons_up[1] += 1
-        for i,col in enumerate(self.collections[2:4]):
-            self.h_nmuons[col].Fill(nmuons[i])
-            self.h_nmuons_up[col].Fill(nmuons_up[i])
-            self.h_nmuons_down[col].Fill(nmuons_down[i])
-        return ndsa_ids, ndgl_ids
-
+        return super().count_muons(ev)
 
     '''
     Function to apply DisplacedMuonFilter. It fills a histogram telling, in case of returning False,
@@ -353,7 +331,7 @@ class CosmicsPlotHandler(PlotHandler):
         - toApply = [x,x,x]: indicates with 1 and 0 if each stage of the filter is applied
     '''
     def passMuonFilter(self, ev, n, toApply=[1,1,1]):
-        super().passMuonFilter(ev, n, toApply)
+        return super().passMuonFilter(ev, n, toApply)
 
 
     def write(self):

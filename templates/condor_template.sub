@@ -5,5 +5,5 @@ output          = {0}/log_{1}.out
 error           = {0}/log_{1}.err
 log             = {0}/log_{1}.log
 Notify_user     = rlopezru@cern.ch
-+JobFlavour     = "workday"
++JobFlavour     = "longlunch"
 queue filename matching ({0}/bash_{1}*sh)
