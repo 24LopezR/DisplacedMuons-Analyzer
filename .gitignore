@@ -1,4 +1,6 @@
 output/
 hists/
+condor/
 condor/out/
 include/__pycache__/
+rlopezru.cc
