@@ -38,12 +38,12 @@ if __name__ == '__main__':
         f.write('DEBUG = {0}'.format(args.debug))
 
     # Directory where samples are stored 
-    # MiniAOD: _filedir = '/eos/user/r/rlopezru/Cosmics/NoBPTX/CosmicsAnalysis_Run2022C/230221_191312_MiniAOD/0000/'
-    # AOD: _filedir = '/eos/user/r/rlopezru/Cosmics/NoBPTX/CosmicsAnalysis_Run2022C/230301_114700/0000/' 
+    _filedir_MiniAOD = '/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_MiniAOD-Ntuples/230421_160633/0000/'
+    # AOD: _filedir = '/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_AOD-Ntuples/230421_130233/0000'
     #_filedir = '/eos/user/r/rlopezru/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_displacedFilter_fromAOD/230310_122743/0000/'
     #_filedir = '/eos/user/r/rlopezru/Cosmics/NoBPTX/CosmicsAnalysis_Run2022C/230310_122707/0000/'
-    _filedir = '/afs/cern.ch/user/r/rlopezru/private/ntuplizer_test/CMSSW_12_4_0/src/Analysis/Cosmics-Ntuplizer/HTo2LL/'
-    launch = Launcher(_filedir, args.tag, args.cuts_filename)
+    _filedir = '/eos/user/r/rlopezru/Samples/NoBPTX/CosmicsAnalysis_Run2022C_AOD-Ntuples/230421_130233/0000/'
+    launch = Launcher(_filedir_MiniAOD, args.tag, args.cuts_filename)
     if args.condor:
         launch.launchJobs()
     else:

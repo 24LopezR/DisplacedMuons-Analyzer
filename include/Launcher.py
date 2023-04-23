@@ -6,7 +6,7 @@ class Launcher:
 
 
     def __init__(self, filedir, tag, cut_file):
-        WORKDIR = "/afs/cern.ch/user/r/rlopezru/private/ntuplizer_test/CMSSW_12_4_0/src/Analysis/Cosmics-Analyzer/"
+        WORKDIR = "/afs/cern.ch/user/r/rlopezru/private/ntuplizer_test/CMSSW_13_0_0_pre4/src/Analysis/DisplacedMuons-Analyzer_Mar14/DisplacedMuons-Analyzer/"
         # Read input args
         if filedir: self.filedir = filedir
         self.tag = tag
@@ -40,12 +40,12 @@ class Launcher:
                                                                self.cut_file,
                                                                self.tag)
             sh_filename = self.condor_dir+"bash_"+fname[:-5]+".sh"
-            sub_filename = self.condor_dir+"condor_"+fname[:-5]+".sub"
             with open(sh_filename,"w") as f_sh:
                 f_sh.write(self.condorSh_template.format(command))
-            with open(sub_filename,"w") as f_sub:
-                f_sub.write(self.condorSub_template.format(sh_filename, self.condor_dir+"log_"+fname[:-5]))
-            os.system("condor_submit "+sub_filename+" --batch-name "+fname[:-5])
+        sub_filename = self.condor_dir+"condor_"+self.tag+".sub"
+        with open(sub_filename,"w") as f_sub:
+            f_sub.write(self.condorSub_template.format(self.condor_dir, self.tag))
+        os.system("condor_submit "+sub_filename+" --batch-name "+self.tag)
 
 
     def loop(self):
