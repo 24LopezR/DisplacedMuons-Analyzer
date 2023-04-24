@@ -202,8 +202,6 @@ class CosmicsPlotHandler(PlotHandler):
         ## Check if muon passes ID selection
         passID = passIDSelection(ev, n, collection)
         cos_alpha_temp = None
-        # Fill variable histograms
-        self.fillVariableHistograms(ev, n, collection)
         if passID:
             debug.print("ID passed by muon {0}".format(n), "INFO")
             hasProbe, cos_alpha_temp, i = self.findProbeMuons(ev, n, collection, ids)

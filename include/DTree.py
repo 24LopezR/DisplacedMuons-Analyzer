@@ -34,19 +34,19 @@ class DTree:
         # ----------------------------------------------------------------------------------------------------------
         
         self.dtpaths = []
-        self.dtfiles = []
+        #self.dtfiles = []
         #self.dtrees  = []
         self.outHistFiles = []
         for i,_file in enumerate(os.listdir(self.location)):
             if '.root' not in _file: continue
-            ftfile = TFile(location + _file)
-            ttree = ftfile.Get('Events')
+            #ftfile = TFile(location + _file)
+            #ttree = ftfile.Get('Events')
             self.dtpaths.append(location + _file)
-            self.dtfiles.append(ftfile)
+            #self.dtfiles.append(ftfile)
             #self.dtrees.append(ttree)
             outHistFilename = self.histsDir+'hists_{0}_{1}.root'.format(self.name, i)
             self.outHistFiles.append(outHistFilename) # have a register of the output files with the histograms
-        self.closeFiles()
+        #self.closeFiles()
 
         '''
         self.count = 0.
