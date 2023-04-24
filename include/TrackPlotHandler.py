@@ -120,12 +120,12 @@ class TrackPlotHandler:
             for n in range(eval('ev.n{0}'.format(collection))):
                 ## Apply cuts
                 if np.prod(eval(self.cuts[collection])):
-                    ## Fill variable plots
-                    self.fillVariableHistograms(ev, n, collection)
                     ## Check if muon passes ID selection
                     passID = passIDSelection(ev, n, collection)
                     cos_alpha_temp = None
                     if passID:
+                        ## Fill variable plots
+                        self.fillVariableHistograms(ev, n, collection)
                         hasProbe, cos_alpha_temp, i = self.findProbe(ev, n, collection, eval('ev.n{0}'.format(collection)))
                         ## Fill efficiency plots
                         self.fillEfficiencyHistograms(ev, n, collection, hasProbe)

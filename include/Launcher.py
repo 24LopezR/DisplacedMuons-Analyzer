@@ -6,7 +6,8 @@ class Launcher:
 
 
     def __init__(self, filedir, tag, cut_file):
-        WORKDIR = "/afs/cern.ch/user/r/rlopezru/private/ntuplizer_test/CMSSW_13_0_0_pre4/src/Analysis/DisplacedMuons-Analyzer_Mar14/DisplacedMuons-Analyzer/"
+        WORKDIR = os.getcwd() + '/'
+        print(' Workdir (from include/Launcher.py) {0}'.format(WORKDIR))
         # Read input args
         if filedir: self.filedir = filedir
         self.tag = tag
