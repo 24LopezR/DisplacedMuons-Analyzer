@@ -1,7 +1,7 @@
 import os
 
-tag = 'redo_AOD_IDcuts'
-njobs = 270
+tag = 'redo_MiniAOD_IDcuts'
+njobs = 116
 
 WORKDIR = os.getcwd() + '/'
 print(' Workdir (from include/Launcher.py) {0}'.format(WORKDIR))

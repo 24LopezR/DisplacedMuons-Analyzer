@@ -188,7 +188,7 @@ def makeVarPlot(hfile, hname, tag, title, collection, names, color=r.kBlue, ylog
     latex.SetTextSize(0.025);
     #latex.DrawLatex(0.17, 0.86, "Emulated DisplacedMuonFilter".format(data))
     #latex.DrawLatex(0.17, 0.83, "(minMatches=2, minPtSTA=3.5, minPtTK=3.5)".format(data))
-    latex.DrawLatex(0.17, 0.80, "NoBPTX3BX trigger, no ID cuts".format(data))
+    latex.DrawLatex(0.17, 0.80, "NoBPTX3BX trigger, tag ID muons".format(data))
     
     if not os.path.exists(EOSPATH+'Plots/'+tag):
         os.makedirs(EOSPATH+'Plots/'+tag)
