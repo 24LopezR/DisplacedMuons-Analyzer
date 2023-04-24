@@ -100,7 +100,7 @@ class DTree:
     def loop(self, cutsFilename):
         self.cutsFilename = cutsFilename
 
-        for i,path in enumerate(self.dtpaths):
+        for i,path in enumerate(self.dtpaths[0:1]):
             print(' -> Processing file {0}'.format(path))
             command = "python3 {0} -o {1} -i {2} -c {3} --name {4}".format(self.scriptLoc,
                                                                                   self.outHistFiles[i],
