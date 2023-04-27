@@ -23,11 +23,11 @@ output          = {1}.out
 error           = {1}.err
 log             = {1}.log
 Notify_user     = rlopezru@cern.ch
-+JobFlavour     = "longlunch"
++JobFlavour     = "workday"
 queue 1
 '''
 
-failed_AOD = 0
+failed_AOD = []
 for i in range(njobs_AOD):
     if os.path.exists(histdir + 'hists_Cosmics_2022C_AOD_{0}.root'.format(i)): continue
     bash_file = 'bash_Cosmics_2022C_AOD_{0}.sh'.format(i)
@@ -35,23 +35,25 @@ for i in range(njobs_AOD):
     with open(sub_filename,"w") as f_sub:
         f_sub.write(condorSub_template.format(condor_dir + bash_file, condor_dir + 'log_failed_AOD_'+bash_file[:-3]))
     if args.run: os.system("condor_submit "+sub_filename+" --batch-name job_AOD_"+str(i))
-    print('Failed job AOD: {0}'.format(i))
+    #print('Failed job AOD: {0}'.format(i))
     #os.system('cat '+sub_filename)
-    print("condor_submit "+sub_filename+" --batch-name job_AOD_"+str(i))
-    failed_AOD += 1
+    #print("condor_submit "+sub_filename+" --batch-name job_AOD_"+str(i))
+    failed_AOD.append(i)
 
-failed_MiniAOD = 0
+failed_MiniAOD = []
 for i in range(njobs_MiniAOD):
     if os.path.exists(histdir + 'hists_Cosmics_2022C_MiniAOD_{0}.root'.format(i)): continue
     bash_file = 'bash_Cosmics_2022C_MiniAOD_{0}.sh'.format(i)
     sub_filename = condor_dir + 'submit_failed_MiniAOD_{0}.sub'.format(i+1)
     with open(sub_filename,"w") as f_sub:
         f_sub.write(condorSub_template.format(condor_dir + bash_file, condor_dir + 'log_failed_MiniAOD_'+bash_file[:-3]))
-    if args.run: os.system("condor_submit "+sub_filename+" --batch-name job_MiniAOD_"+str(i))
-    print('Failed job MiniAOD: {0}'.format(i))
+    #if args.run: os.system("condor_submit "+sub_filename+" --batch-name job_MiniAOD_"+str(i))
+    #print('Failed job MiniAOD: {0}'.format(i))
     #os.system('cat '+sub_filename)
-    print("condor_submit "+sub_filename+" --batch-name job_MiniAOD_"+str(i))
-    failed_MiniAOD += 1
+    #print("condor_submit "+sub_filename+" --batch-name job_MiniAOD_"+str(i))
+    failed_MiniAOD.append(i)
 
-print('>>> Failed jobs AOD     = {0}'.format(failed_AOD))
-print('>>> Failed jobs MiniAOD = {0}'.format(failed_MiniAOD))
+print('>>> Failed jobs AOD     = {0}'.format(len(failed_AOD)))
+print(failed_AOD)
+print('>>> Failed jobs MiniAOD = {0}'.format(len(failed_MiniAOD)))
+print(failed_MiniAOD)

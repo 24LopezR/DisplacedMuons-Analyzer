@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     # Trees
     trees_originalFilter = []
-    trees_originalFilter.append(DTree('Cosmics_2022C_MiniAOD',             'Cosmics Run2022C MiniAOD',            dat['Cosmics_2022C']['MiniAOD-Ntuples'],              gTag, isData = False))
+    #trees_originalFilter.append(DTree('Cosmics_2022C_MiniAOD',             'Cosmics Run2022C MiniAOD',            dat['Cosmics_2022C']['MiniAOD-Ntuples'],              gTag, isData = False))
     trees_originalFilter.append(DTree('Cosmics_2022C_AOD',                 'Cosmics Run2022C AOD',                dat['Cosmics_2022C']['AOD-Ntuples'],                  gTag, isData = False))
     #trees_originalFilter.append(DTree('HTo2LongLived_400_150_4000','H #rightarrow SS (400,150,4000)', dat['HTo2LongLived_400_150_4000']['MiniAOD-Ntuples'], gTag, isData = False))
     #trees_originalFilter.append(DTree('HTo2LongLived_125_20_1300', 'H #rightarrow SS (125,20,1300)',  dat['HTo2LongLived_125_20_1300']['MiniAOD-Ntuples'],  gTag, isData = False))

@@ -163,7 +163,7 @@ class CosmicsPlotHandler(PlotHandler):
                 if not self.evalCuts(ev, n, collection): continue
                 
                 ## Fill variable plots (thes histograms will only have the cuts in the config file, but not the ones in the tnp ID)
-                self.fillVariableHistograms(ev, n, collection)
+                #self.fillVariableHistograms(ev, n, collection)
                 self.h_nmuons[collection].Fill(eval('ev.n{0}'.format(collection)))
                 self.h_nmuons_down[collection].Fill(n_down)
                 self.h_nmuons_up[collection].Fill(n_up)
@@ -188,13 +188,13 @@ class CosmicsPlotHandler(PlotHandler):
                 if not self.evalCuts(ev, n, collection): continue
 
                 ### Apply filter (not anymore)
-                #if not self.passMuonFilter(ev, ndsa): continue
+                #if not self.passMuonFilter(ev, n, toApply=[1,1,1]): continue
 
                 # Fill variable histograms
-                self.fillVariableHistograms(ev, n, collection)
+                #self.fillVariableHistograms(ev, n, collection)
 
                 ### Tag and probe
-                passID = self.tagNprobeMuons(collection, ev, n, ndsa_ids)
+                passID = self.tagNprobeMuons(collection, ev, n, ids)
         # -------------------------------------------------------------------------------
 
 
@@ -205,6 +205,8 @@ class CosmicsPlotHandler(PlotHandler):
         if passID:
             debug.print("ID passed by muon {0}".format(n), "INFO")
             hasProbe, cos_alpha_temp, i = self.findProbeMuons(ev, n, collection, ids)
+            # Fill variable histograms
+            self.fillVariableHistograms(ev, n, collection)
             # Fill efficiency histograms
             self.fillEfficiencyHistograms(ev, n, collection, hasProbe)
             if hasProbe: self.fillDimuonVariableHistograms(ev, n, i, cos_alpha_temp, collection)
@@ -218,6 +220,8 @@ class CosmicsPlotHandler(PlotHandler):
         if passID:
             debug.print("ID passed by muon {0}".format(n), "INFO")
             hasProbe, cos_alpha_temp, i = self.findProbeTracks(ev, n, collection, ntotal)
+            # Fill variable histograms
+            self.fillVariableHistograms(ev, n, collection)
             # Fill efficiency histograms
             self.fillEfficiencyHistograms(ev, n, collection, hasProbe)
             if hasProbe: self.fillDimuonVariableHistograms(ev, n, i, cos_alpha_temp, collection)

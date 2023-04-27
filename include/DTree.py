@@ -123,6 +123,7 @@ class DTree:
         print('    - sample:   {0}'.format(self.name))
         command = 'hadd {0} '.format(self.targetFile)
         for _file in self.outHistFiles:
+            if not os.path.exists(_file): continue
             command += '{0} '.format(_file)
         os.system(command)
         print('>> Merging done')
