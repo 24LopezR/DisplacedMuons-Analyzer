@@ -9,7 +9,8 @@
             "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_AOD-Ntuples/230329_153827/0000/",
             "MiniAOD-Ntuples":            "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD-Ntuples/230318_104021/0000/",
             "AOD-MiniAOD_nsegments2":     " ",
-            "MiniAOD-Ntuples_nsegments2": "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD-Ntuples_nsegments2/"
+            "MiniAOD-Ntuples_nsegments2": "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-400_MFF-150_CTau-4000mm_MiniAOD-Ntuples_nsegments2/",
+            "MiniAOD-Ntuples_nsegments2_review": ""
     },
     "HTo2LongLived_125_20_1300": {
             "AOD-Ntuples":                "/eos/user/r/rlopezru/Samples/HTo2LongLivedTo2mu2jets_Ntuples/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-1300mm_TuneCP5_13p6TeV_pythia8/HTo2LongLivedTo2mu2jets_MH-125_MFF-20_CTau-1300mm_AOD-Ntuples/230330_122404/0000/",

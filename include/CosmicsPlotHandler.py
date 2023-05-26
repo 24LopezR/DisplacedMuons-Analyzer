@@ -170,6 +170,7 @@ class CosmicsPlotHandler(PlotHandler):
 
                 ### Tag and probe
                 passID = self.tagNprobeTracks(collection, ev, n, ntotal)
+                if passID: break
         # -------------------------------------------------------------------------------
 
 
@@ -188,13 +189,17 @@ class CosmicsPlotHandler(PlotHandler):
                 if not self.evalCuts(ev, n, collection): continue
 
                 ### Apply filter (not anymore)
-                #if not self.passMuonFilter(ev, n, toApply=[1,1,1]): continue
+                if not self.passMuonFilter(ev, n, toApply=[1,1,1]):
+                    #print('AOD Muon {0} not passing emulated filter'.format(n)) 
+                    continue
+                #print('AOD Muon {0} passing emulated filter'.format(n))
 
                 # Fill variable histograms
                 #self.fillVariableHistograms(ev, n, collection)
 
                 ### Tag and probe
                 passID = self.tagNprobeMuons(collection, ev, n, ids)
+                if passID: break
         # -------------------------------------------------------------------------------
 
 

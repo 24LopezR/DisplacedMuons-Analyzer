@@ -22,7 +22,7 @@ class MCSignalPlotHandler(PlotHandler):
         super().__init__(histfilename, cutsFilePath, sampleName)
 
         self.collections = ['dsa','dmu_dsa']
-         
+        self.gen = False 
         ## Define histograms
         self.h_nmuons = {}
         self.h_nmuons_down = {}
@@ -194,10 +194,11 @@ class MCSignalPlotHandler(PlotHandler):
                 self.fillVariableHistograms(ev, n, 'dsa')
         ## Compute efficiencies wrt generation
         ##     Loop over hard process particles
-        for i in range(ev.nHardProcessParticle):
-            if abs(ev.HardProcessParticle_pdgId[i]) != 13: continue
-            hasProbe, _ = self.findProbeTracks(ev, i)
-            self.fillEfficiencyHistograms(ev, i, 'dsa', hasProbe)
+        if self.gen:
+            for i in range(ev.nHardProcessParticle):
+                if abs(ev.HardProcessParticle_pdgId[i]) != 13: continue
+                hasProbe, _ = self.findProbeTracks(ev, i)
+                self.fillEfficiencyHistograms(ev, i, 'dsa', hasProbe)
         # -------------------------------------------------------------------------------
 
         # -------------------------------------------------------------------------------
@@ -219,11 +220,12 @@ class MCSignalPlotHandler(PlotHandler):
         ## Compute efficiencies wrt generation
         ##     Loop over hard process particles
         #print('>> Loop over HardProcessParticles')
-        for i in range(ev.nHardProcessParticle):
-            if abs(ev.HardProcessParticle_pdgId[i]) != 13: continue
-            hasProbe, _ = self.findProbeMuons(ev, i)
-            #print('  >> hasProbe = {0}'.format(hasProbe))
-            self.fillEfficiencyHistograms(ev, i, 'dmu_dsa', hasProbe)
+        if self.gen:
+            for i in range(ev.nHardProcessParticle):
+                if abs(ev.HardProcessParticle_pdgId[i]) != 13: continue
+                hasProbe, _ = self.findProbeMuons(ev, i)
+                #print('  >> hasProbe = {0}'.format(hasProbe))
+                self.fillEfficiencyHistograms(ev, i, 'dmu_dsa', hasProbe)
         # -------------------------------------------------------------------------------
         self.h_check_if_tracks_and_muons_are_identical['0'].Fill((sum(passMuon)+sum(passTrack))%2)
 

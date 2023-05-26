@@ -290,9 +290,10 @@ if __name__ == '__main__':
 
         hfile = r.TFile(dtree.targetFile)
 
-        hists =     ["h_pt", "h_eta", "h_phi", "h_normalizedChi2", "h_dxy", "h_dz"]
+        #hists =     ["h_pt", "h_eta", "h_phi", "h_normalizedChi2", "h_dxy", "h_dz"]
+        hists =     ["h_dxy", "h_dz"]
         hists_log = []
-        hists_eff = ["h_eff_pt", "h_eff_eta"]
+        hists_eff = []
         colors_1 = [[r.kMagenta+1, r.kCyan-3], [r.kAzure, r.kOrange+10]]
         colors = [r.kRed+1, r.kBlue+1]
         
