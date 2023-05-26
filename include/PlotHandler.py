@@ -17,7 +17,7 @@ class PlotHandler:
         self.filename = histfilename
         self.cutsFilePath = cutsFilePath
         self.sampleName = sampleName
-
+        self.mfilter = DisplacedMuonFilter()
 
     def processEvent(self, ev):
         return

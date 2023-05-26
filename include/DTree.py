@@ -34,19 +34,19 @@ class DTree:
         # ----------------------------------------------------------------------------------------------------------
         
         self.dtpaths = []
-        self.dtfiles = []
+        #self.dtfiles = []
         #self.dtrees  = []
         self.outHistFiles = []
         for i,_file in enumerate(os.listdir(self.location)):
             if '.root' not in _file: continue
-            ftfile = TFile(location + _file)
-            ttree = ftfile.Get('Events')
+            #ftfile = TFile(location + _file)
+            #ttree = ftfile.Get('Events')
             self.dtpaths.append(location + _file)
-            self.dtfiles.append(ftfile)
+            #self.dtfiles.append(ftfile)
             #self.dtrees.append(ttree)
             outHistFilename = self.histsDir+'hists_{0}_{1}.root'.format(self.name, i)
             self.outHistFiles.append(outHistFilename) # have a register of the output files with the histograms
-        self.closeFiles()
+        #self.closeFiles()
 
         '''
         self.count = 0.
@@ -100,7 +100,7 @@ class DTree:
     def loop(self, cutsFilename):
         self.cutsFilename = cutsFilename
 
-        for i,path in enumerate(self.dtpaths):
+        for i,path in enumerate(self.dtpaths[0:1]):
             print(' -> Processing file {0}'.format(path))
             command = "python3 {0} -o {1} -i {2} -c {3} --name {4}".format(self.scriptLoc,
                                                                                   self.outHistFiles[i],
@@ -123,6 +123,7 @@ class DTree:
         print('    - sample:   {0}'.format(self.name))
         command = 'hadd {0} '.format(self.targetFile)
         for _file in self.outHistFiles:
+            if not os.path.exists(_file): continue
             command += '{0} '.format(_file)
         os.system(command)
         print('>> Merging done')
